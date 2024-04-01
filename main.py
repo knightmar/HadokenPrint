@@ -2,12 +2,10 @@ import time
 
 import motor_manager
 
-manager = motor_manager.MotorManager('COM6', 'COM7')
-time.sleep(2)
+manager = motor_manager.MotorManager('/dev/ttyACM0', None)
 try:
-    while manager.run:
+    while True:
         manager.goto(int(input("X : ")), int(input("Y : ")))
         time.sleep(1)
 except KeyboardInterrupt:
     time.sleep(3)
-    manager.stop()
