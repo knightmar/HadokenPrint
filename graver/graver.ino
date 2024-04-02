@@ -14,11 +14,11 @@ void loop() {
 
   if (Serial.available() > 0 && !stepper.getMotorState()) {
     int angle = Serial.parseInt();
-    delay(50);
+    delay(10);
     stepper.moveAngle(angle);
 
     float moved_angle = stepper.encoder.getAngleMoved();
     Serial.println(moved_angle);
   }
-  delay(20);
+  delay(10);
 }
