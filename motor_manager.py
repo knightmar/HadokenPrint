@@ -25,17 +25,11 @@ class MotorManager:
 
     def goto_relative(self, x, y):
         try:
-            self.x = self.x + x
-            self.y = self.y + y
+            wanted_x = self.x + x
+            wanted_y = self.y + y
 
-            if self.x < 0:
-                self.x = 0
-            if self.y < 0:
-                self.y = 0
-            if self.x > width:
-                self.x = width
-            if self.y > height:
-                self.y = height
+            self.x = wanted_x
+            self.y = wanted_y
 
             print("X : ", self.x, "Y : ", self.y)
 
@@ -52,10 +46,24 @@ class MotorManager:
                 print(e)
 
     def goto_absolute(self, x, y):
-        x_diff = x - self.x
-        y_diff = y - self.y
+        try:
+            relative_x = min(max(0, x), width) - self.x
+            relative_y = min(max(0, y), height) - self.y
 
-        self.goto_relative(x_diff, y_diff)
+            # Adjust relative_x and relative_y if either self.x or x is negative
+            if self.x < 0 or x < 0:
+                relative_x = x + abs(self.x)
+            if self.y < 0 or y < 0:
+                relative_y = y + abs(self.y)
+
+            print(relative_x)
+            self.goto_relative(relative_x, relative_y)
+
+        except Exception as e:
+            if hasattr(e, 'message'):
+                print(e.message)
+            else:
+                print(e)
 
     def get_current_position(self):
         return self.x, self.y

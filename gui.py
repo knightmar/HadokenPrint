@@ -10,6 +10,9 @@ DOWN = 2
 LEFT = 3
 RIGHT = 4
 
+x_port = "/dev/ttyACM0"
+y_port = None
+
 
 class Joystick:
     def __init__(self, master, manager):
@@ -26,6 +29,7 @@ class Joystick:
         self.draw_joystick()
 
         # Bind mouse events
+        self.canvas.bind("<B1-ButtonRelease>", self.release_joystick)
         self.canvas.bind("<B1-Motion>", self.move_joystick)
 
         # Display coordinates
@@ -36,12 +40,18 @@ class Joystick:
         self.canvas.delete("joystick")
         self.canvas.create_oval(self.x - 10, self.y - 10, self.x + 10, self.y + 10, fill="red", tags="joystick")
 
-    def move_joystick(self, event):
+    def release_joystick(self, event):
         self.x = event.x
         self.y = event.y
         self.draw_joystick()
         self.update_label()
         self.manager.goto_absolute(self.x, self.y)
+
+    def move_joystick(self, event):
+        self.x = event.x
+        self.y = event.y
+        self.draw_joystick()
+        self.update_label()
 
     def set_position(self, x, y):
         self.x = x
@@ -57,7 +67,7 @@ class Gui:
     def __init__(self):
         self.window = tk.Tk()
         self.window.wm_minsize(300, 200)
-        self.manager = motor_manager.MotorManager('/dev/ttyACM0', None)
+        self.manager = motor_manager.MotorManager(x_port, y_port)
 
         self.move_panel_setup()
 
