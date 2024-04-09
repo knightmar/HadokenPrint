@@ -1,6 +1,9 @@
 import tkinter as tk
+from tkinter import ttk
 
-import motor_manager
+from python.gui.joystick import Joystick
+from python.utils import motor_manager
+from python.utils.slicer import SlicerInterface
 
 speed = 50
 
@@ -12,55 +15,6 @@ RIGHT = 4
 
 x_port = "/dev/ttyACM0"
 y_port = None
-
-
-class Joystick:
-    def __init__(self, master, manager):
-        self.master = master
-        self.canvas = tk.Canvas(master, width=motor_manager.width, height=motor_manager.height, bg="white")
-        self.canvas.pack()
-        self.manager = manager
-
-        # Joystick position
-        self.x = motor_manager.width // 2
-        self.y = motor_manager.height // 2
-
-        # Draw joystick
-        self.draw_joystick()
-
-        # Bind mouse events
-        self.canvas.bind("<B1-ButtonRelease>", self.release_joystick)
-        self.canvas.bind("<B1-Motion>", self.move_joystick)
-
-        # Display coordinates
-        self.label = tk.Label(master, text="X: {} Y: {}".format(self.x, self.y))
-        self.label.pack()
-
-    def draw_joystick(self):
-        self.canvas.delete("joystick")
-        self.canvas.create_oval(self.x - 10, self.y - 10, self.x + 10, self.y + 10, fill="red", tags="joystick")
-
-    def release_joystick(self, event):
-        self.x = event.x
-        self.y = event.y
-        self.draw_joystick()
-        self.update_label()
-        self.manager.goto_absolute(self.x, self.y)
-
-    def move_joystick(self, event):
-        self.x = event.x
-        self.y = event.y
-        self.draw_joystick()
-        self.update_label()
-
-    def set_position(self, x, y):
-        self.x = x
-        self.y = y
-        self.draw_joystick()
-        self.update_label()
-
-    def update_label(self):
-        self.label.config(text="X: {} Y: {}".format(self.x, self.y))
 
 
 class Gui:
@@ -85,7 +39,16 @@ class Gui:
             self.manager.goto_relative(speed, 0)
 
     def move_panel_setup(self):
-        buttons_move_frame = tk.Frame(self.window)
+        notebook = ttk.Notebook(self.window)
+
+        slicer_tab = ttk.Frame(notebook)
+        joystick_tab = ttk.Frame(notebook)
+
+        buttons_move_frame = tk.Frame(joystick_tab)
+
+        notebook.add(joystick_tab, text="Manual move")
+        notebook.add(slicer_tab, text="Slicer")
+        notebook.pack(expand=1, fill="both")
 
         up_button = tk.Button(buttons_move_frame, text="Up", command=lambda: self.move(UP))
 
@@ -107,11 +70,10 @@ class Gui:
         self.window.bind("<Left>", lambda e: self.move(LEFT))
         self.window.bind("<Right>", lambda e: self.move(RIGHT))
 
-        joystick = Joystick(self.window, self.manager)
+        joystick = Joystick(joystick_tab, self.manager)
         self.manager.add_position_listener(joystick.set_position)
 
-    def update_gui(self):
-        pass
+        SlicerInterface(slicer_tab)
 
 
 if __name__ == '__main__':

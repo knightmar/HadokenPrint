@@ -1,6 +1,6 @@
 import time
 
-import motor_manager
+from python.utils import motor_manager
 
 manager = motor_manager.MotorManager('/dev/ttyACM1', None)
 try:
