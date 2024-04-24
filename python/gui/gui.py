@@ -2,8 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 
 from python.gui.joystick import Joystick
+from python.gui.printer import PrinterInterface
 from python.utils import motor_manager
-from python.utils.slicer import SlicerInterface
+from python.gui.slicer import SlicerInterface
 
 speed = 50
 
@@ -21,7 +22,7 @@ class Gui:
     def __init__(self):
         self.window = tk.Tk()
         self.window.wm_minsize(300, 200)
-        self.manager = motor_manager.MotorManager(x_port, y_port)
+        self.motor_manager = motor_manager.MotorManager(x_port, y_port)
 
         self.move_panel_setup()
 
@@ -30,28 +31,29 @@ class Gui:
 
     def move(self, direction):
         if direction == UP:
-            self.manager.goto_relative(0, -speed)
+            self.motor_manager.goto_relative(0, -speed)
         elif direction == DOWN:
-            self.manager.goto_relative(0, speed)
+            self.motor_manager.goto_relative(0, speed)
         elif direction == LEFT:
-            self.manager.goto_relative(-speed, 0)
+            self.motor_manager.goto_relative(-speed, 0)
         elif direction == RIGHT:
-            self.manager.goto_relative(speed, 0)
+            self.motor_manager.goto_relative(speed, 0)
 
     def move_panel_setup(self):
         notebook = ttk.Notebook(self.window)
 
         slicer_tab = ttk.Frame(notebook)
         joystick_tab = ttk.Frame(notebook)
-
-        buttons_move_frame = tk.Frame(joystick_tab)
+        printer_tab = ttk.Frame(notebook)
 
         notebook.add(joystick_tab, text="Manual move")
         notebook.add(slicer_tab, text="Slicer")
+        notebook.add(printer_tab, text="Printer")
         notebook.pack(expand=1, fill="both")
 
-        up_button = tk.Button(buttons_move_frame, text="Up", command=lambda: self.move(UP))
+        buttons_move_frame = tk.Frame(joystick_tab)
 
+        up_button = tk.Button(buttons_move_frame, text="Up", command=lambda: self.move(UP))
         down_button = tk.Button(buttons_move_frame, text="Down", command=lambda: self.move(DOWN))
 
         up_button.pack(side=tk.TOP, expand=True)
@@ -70,10 +72,11 @@ class Gui:
         self.window.bind("<Left>", lambda e: self.move(LEFT))
         self.window.bind("<Right>", lambda e: self.move(RIGHT))
 
-        joystick = Joystick(joystick_tab, self.manager)
-        self.manager.add_position_listener(joystick.set_position)
+        joystick = Joystick(joystick_tab, self.motor_manager)
+        self.motor_manager.add_position_listener(joystick.set_position)
 
         SlicerInterface(slicer_tab)
+        PrinterInterface(printer_tab)
 
 
 if __name__ == '__main__':

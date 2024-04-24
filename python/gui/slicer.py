@@ -10,6 +10,7 @@ class SlicerInterface:
         self.canvas = tk.Canvas(master, width=motor_manager.width, height=motor_manager.height, bg="white")
         self.canvas.pack()
         self.canvas.bind("<B1-Motion>", self.draw_pixels)
+        self.canvas.bind("<ButtonRelease-1>", self.end_line)
 
         self.reset_button = tk.Button(master, text="Reset", command=self.reset)
         self.reset_button.pack()
@@ -21,10 +22,12 @@ class SlicerInterface:
         self.load_button.pack()
 
         self.pixel_list = []
+        self.current_line = []
 
     def reset(self):
         self.canvas.delete("all")
         self.pixel_list = []
+        self.current_line = []
 
     def save(self):
         file_path = tk.filedialog.asksaveasfilename()
@@ -47,16 +50,23 @@ class SlicerInterface:
         self.update_canvas()
 
     def draw_pixels(self, event):
-        if not (event.x, event.y) in self.pixel_list:
-            self.pixel_list.append((event.x, event.y))
+        self.canvas.create_rectangle(event.x, event.y, event.x + 1, event.y + 1, fill="black")
+        if not (event.x, event.y) in self.current_line:
+            self.current_line.append((event.x, event.y))
+
+    def end_line(self, event):
+        if self.current_line:
+            self.pixel_list.append(self.current_line)
+            self.current_line = []
         self.update_canvas()
 
     def update_canvas(self):
         self.canvas.delete("all")
-        previous = None
-        for x, y in self.pixel_list:
-            if previous:
-                self.canvas.create_line(previous[0], previous[1], x, y, fill="black")
-            else:
-                self.canvas.create_rectangle(x, y, x + 1, y + 1, fill="black")
-            previous = (x, y)
+        for line in self.pixel_list:
+            previous = None
+            for x, y in line:
+                if previous:
+                    self.canvas.create_line(previous[0], previous[1], x, y, fill="black")
+                else:
+                    self.canvas.create_rectangle(x, y, x + 1, y + 1, fill="black")
+                previous = (x, y)
