@@ -31,6 +31,7 @@ class Gui:
 
     def move(self, direction):
         if direction == UP:
+            print("goto relative")
             self.motor_manager.goto_relative(0, -speed)
         elif direction == DOWN:
             self.motor_manager.goto_relative(0, speed)
