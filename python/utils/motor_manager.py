@@ -36,8 +36,8 @@ class MotorManager:
             for listener in self.pos_listeners:
                 listener(self.x, self.y)
 
-            self.motor_x.write(bytes(str(x), 'utf-8'))
-            self.motor_y.write(bytes(str(y), 'utf-8'))
+            self.motor_x.write(bytes(str(x) + "\n", 'utf-8'))
+            self.motor_y.write(bytes(str(y) + "\n", 'utf-8'))
 
         except Exception as e:
             if hasattr(e, 'message'):
