@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+from python.gui.file import FileInterface
 from python.gui.joystick import Joystick
 from python.gui.printer import PrinterInterface
 from python.utils import motor_manager
@@ -46,10 +47,12 @@ class Gui:
         slicer_tab = ttk.Frame(notebook)
         joystick_tab = ttk.Frame(notebook)
         printer_tab = ttk.Frame(notebook)
+        file_tab = ttk.Frame(notebook)
 
         notebook.add(joystick_tab, text="Manual move")
         notebook.add(slicer_tab, text="Slicer")
         notebook.add(printer_tab, text="Printer")
+        notebook.add(file_tab, text="File")
         notebook.pack(expand=1, fill="both")
 
         buttons_move_frame = tk.Frame(joystick_tab)
@@ -78,6 +81,7 @@ class Gui:
 
         SlicerInterface(slicer_tab)
         PrinterInterface(printer_tab)
+        FileInterface(file_tab)
 
 
 if __name__ == '__main__':
