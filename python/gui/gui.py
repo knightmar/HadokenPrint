@@ -51,8 +51,8 @@ class Gui:
 
         notebook.add(joystick_tab, text="Manual move")
         notebook.add(slicer_tab, text="Slicer")
-        notebook.add(printer_tab, text="Printer")
         notebook.add(file_tab, text="File")
+        notebook.add(printer_tab, text="Printer")
         notebook.pack(expand=1, fill="both")
 
         buttons_move_frame = tk.Frame(joystick_tab)
@@ -79,9 +79,9 @@ class Gui:
         joystick = Joystick(joystick_tab, self.motor_manager)
         self.motor_manager.add_position_listener(joystick.set_position)
 
-        SlicerInterface(slicer_tab)
-        PrinterInterface(printer_tab)
-        FileInterface(file_tab)
+        slicer = SlicerInterface(slicer_tab)
+        file = FileInterface(file_tab)
+        PrinterInterface(printer_tab, self.motor_manager, slicer, file)
 
 
 if __name__ == '__main__':

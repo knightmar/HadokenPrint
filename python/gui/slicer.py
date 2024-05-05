@@ -1,3 +1,4 @@
+import ast
 import csv
 import tkinter as tk
 from tkinter import filedialog
@@ -41,12 +42,9 @@ class SlicerInterface:
         file_path = tk.filedialog.askopenfilename()
         if not file_path:
             return
-        self.pixel_list = []
         with open(file_path, 'r') as myfile:
             reader = csv.reader(myfile, quoting=csv.QUOTE_ALL)
-            for row in reader:
-                x, y = map(int, row)
-                self.pixel_list.append((x, y))
+            self.pixel_list = [[ast.literal_eval(point) for point in line] for line in reader]
         self.update_canvas()
 
     def draw_pixels(self, event):
