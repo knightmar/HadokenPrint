@@ -56,7 +56,6 @@ class MotorManager:
             if self.y < 0 or y < 0:
                 relative_y = y + abs(self.y)
 
-            print(relative_x)
             self.goto_relative(relative_x, relative_y)
 
         except Exception as e:

@@ -16,7 +16,7 @@ LEFT = 3
 RIGHT = 4
 
 x_port = "/dev/ttyACM0"
-y_port = None
+y_port = "/dev/ttyACM1"
 
 
 class Gui:
