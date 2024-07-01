@@ -1,6 +1,7 @@
 #include <UstepperS32.h>
 
 UstepperS32 stepper;
+#define POSITION_REACHED 0x20
 
 void setup() {
   stepper.setup();                   //Initialize uStepper S32
@@ -12,11 +13,14 @@ void setup() {
 
 void loop() {
 
-  if (Serial.available() > 0 && !stepper.getMotorState()) {
+  if (Serial.available() > 0) {
     int angle = Serial.parseInt();
     stepper.moveAngle(angle);
 
-    float moved_angle = stepper.encoder.getAngleMoved();
-    Serial.println(moved_angle);
+    while (!stepper.getMotorState(POSITION_REACHED)) {
+      delay(10);
+    }
+
+    Serial.println("ok");
   }
 }
