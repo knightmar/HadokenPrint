@@ -37,13 +37,9 @@ void loop() {
         stepper.moveToAngle(angle);
 
         if (abs(angle - stepper.angleMoved()) > 0.5) {
-          Serial.println("Bad move");
           stepper.moveToAngle(angle);
         }
         Serial.println("OK");
-      } else {
-        // The input was not "HOME" and not a valid angle
-        Serial.println("Invalid input");
       }
     }
   }

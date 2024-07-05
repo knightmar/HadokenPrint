@@ -1,8 +1,8 @@
 import serial
 from serial.serialutil import SerialException
 
-width = 470
-height = 350
+width = 2000
+height = 1000
 
 
 class MotorManager:
@@ -23,46 +23,33 @@ class MotorManager:
             else:
                 print(e)
 
-    def goto_relative(self, x, y):
-        try:
-            wanted_x = self.x + x
-            wanted_y = self.y + y
-
-            self.x = wanted_x
-            self.y = wanted_y
-
-            print("X : ", self.x, "Y : ", self.y)
-
-            for listener in self.pos_listeners:
-                listener(self.x, self.y)
-
-            self.motor_x.write(bytes(str(x) + "\n", 'utf-8'))
-            self.motor_y.write(bytes(str(y) + "\n", 'utf-8'))
-
-        except Exception as e:
-            if hasattr(e, 'message'):
-                print(e.message)
-            else:
-                print(e)
-
     def goto_absolute(self, x, y):
-        try:
-            relative_x = min(max(0, x), width) - self.x
-            relative_y = min(max(0, y), height) - self.y
+        if x == 0:
+            x = 1
+        if y == 0:
+            y = 1
 
-            # Adjust relative_x and relative_y if either self.x or x is negative
-            if self.x < 0 or x < 0:
-                relative_x = x + abs(self.x)
-            if self.y < 0 or y < 0:
-                relative_y = y + abs(self.y)
+        print("starting move")
+        self.x = min(x, width)
+        self.y = min(y, height)
+        self.x = max(self.x, 0)
+        self.y = max(self.y, 0)
 
-            self.goto_relative(relative_x, relative_y)
+        self.motor_x.write(f"{x}\n".encode())
+        # Send the y angle to the Arduino for the y motor
+        self.motor_y.write(f"{y}\n".encode())
 
-        except Exception as e:
-            if hasattr(e, 'message'):
-                print(e.message)
-            else:
-                print(e)
+        # Wait for both motors to reply with "OK"
+        while True:
+            x_response = self.motor_x.readline().decode().strip()
+            y_response = self.motor_y.readline().decode().strip()
+            print(x_response, y_response)
+            if x_response == "OK" and y_response == "OK":
+                break
+
+    def set_home(self):
+        self.motor_x.write(bytes("HOME" + "\n", 'utf-8'))
+        self.motor_y.write(bytes("HOME" + "\n", 'utf-8'))
 
     def get_current_position(self):
         return self.x, self.y

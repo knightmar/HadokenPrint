@@ -15,8 +15,8 @@ DOWN = 2
 LEFT = 3
 RIGHT = 4
 
-x_port = "/dev/ttyACM0"
-y_port = "/dev/ttyACM1"
+x_port = "/dev/ttyACM1"
+y_port = "/dev/ttyACM0"
 
 
 class Gui:
@@ -32,14 +32,15 @@ class Gui:
 
     def move(self, direction):
         if direction == UP:
-            print("goto relative")
-            self.motor_manager.goto_relative(0, -speed)
+            self.motor_manager.y += speed
         elif direction == DOWN:
-            self.motor_manager.goto_relative(0, speed)
+            self.motor_manager.y -= speed
         elif direction == LEFT:
-            self.motor_manager.goto_relative(-speed, 0)
+            self.motor_manager.x += speed
         elif direction == RIGHT:
-            self.motor_manager.goto_relative(speed, 0)
+            self.motor_manager.x -= speed
+
+        self.motor_manager.goto_absolute(self.motor_manager.x, self.motor_manager.y)
 
     def move_panel_setup(self):
         notebook = ttk.Notebook(self.window)
