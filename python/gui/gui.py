@@ -5,7 +5,7 @@ from python.gui.file import FileInterface
 from python.gui.joystick import Joystick
 from python.gui.printer import PrinterInterface
 from python.utils import motor_manager
-from python.gui.slicer import SlicerInterface
+from python.gui.hand_draw import HandDrawInterface
 
 speed = 50
 
@@ -15,15 +15,17 @@ DOWN = 2
 LEFT = 3
 RIGHT = 4
 
-x_port = "/dev/ttyACM1"
-y_port = "/dev/ttyACM0"
+x_port = "/dev/serial/by-id/usb-STMicroelectronics_USTEPPER_S32_CDC_in_FS_Mode_2050307F5632-if00"
+y_port = "/dev/serial/by-id/usb-STMicroelectronics_USTEPPER_S32_CDC_in_FS_Mode_2058307B5632-if00"
+arduino_port = "/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_55737313231351B06080-if00"
 
 
 class Gui:
     def __init__(self):
         self.window = tk.Tk()
         self.window.wm_minsize(300, 200)
-        self.motor_manager = motor_manager.MotorManager(x_port, y_port)
+        self.motor_manager = motor_manager.MotorManager(x_port, y_port, arduino_port)
+        self.motor_manager.set_home()
 
         self.move_panel_setup()
 
@@ -80,7 +82,7 @@ class Gui:
         joystick = Joystick(joystick_tab, self.motor_manager)
         self.motor_manager.add_position_listener(joystick.set_position)
 
-        slicer = SlicerInterface(slicer_tab)
+        slicer = HandDrawInterface(slicer_tab)
         file = FileInterface(file_tab)
         PrinterInterface(printer_tab, self.motor_manager, slicer, file)
 

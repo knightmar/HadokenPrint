@@ -1,3 +1,4 @@
+import time
 import tkinter as tk
 
 
@@ -34,3 +35,4 @@ class PrinterInterface:
 
         for point in point_list:
             self.motor_manager.goto_absolute(point[0], point[1])
+            time.sleep(0.05)

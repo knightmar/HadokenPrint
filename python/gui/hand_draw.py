@@ -6,7 +6,7 @@ from tkinter import filedialog
 from python.utils import motor_manager
 
 
-class SlicerInterface:
+class HandDrawInterface:
     def __init__(self, master):
         self.canvas = tk.Canvas(master, width=motor_manager.width, height=motor_manager.height, bg="white")
         self.canvas.pack()
