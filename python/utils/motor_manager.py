@@ -27,17 +27,20 @@ class MotorManager:
             else:
                 print(e)
 
-    def goto_absolute(self, x, y):
+    def goto_absolute(self, x, y, allow_negative=False):
         # print("starting move")
         self.x = min(x, width)
         self.y = min(y, height)
         # min by 1 because 0 is error
-        self.x = max(self.x, 1)
-        self.y = max(self.y, 1)
+        if not allow_negative:
+            self.x = max(self.x, 1)
+            self.y = max(self.y, 1)
 
-        self.motor_x.write(f"{x}\n".encode())
+        print(self.x, self.y)
+
+        self.motor_x.write(f"{self.x}\n".encode())
         # Send the y angle to the Arduino for the y motor
-        self.motor_y.write(f"{y}\n".encode())
+        self.motor_y.write(f"{self.y}\n".encode())
 
         # Wait for both motors to reply with "OK"
         while True:
@@ -84,7 +87,7 @@ class MotorManager:
                     break
                 else:
                     # print("goto", x, y)
-                    self.goto_absolute(x, y)
+                    self.goto_absolute(x, y, True)
                     time.sleep(0.01)
             except IndexError:
                 pass

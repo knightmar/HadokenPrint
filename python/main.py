@@ -11,10 +11,9 @@ arduino_port = "/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_557373132313
 manager = motor_manager.MotorManager(x_port, y_port, arduino_port)
 try:
     manager.set_home()
-    manager.goto_absolute(1000, 1000)
 
-    # while True:
-    #     manager.goto_absolute(int(input("X : ")), int(input("Y : ")))
+    while True:
+        manager.goto_absolute(int(input("X : ")), int(input("Y : ")))
 
 
 except KeyboardInterrupt:
