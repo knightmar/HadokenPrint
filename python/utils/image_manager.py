@@ -84,8 +84,8 @@ def display_points_in_pygame(points):
     pygame.quit()
 
 
-# Example usage
-svg_file_path = '/home/knightmar/Téléchargements/laser.svg'
-points = extract_points_from_svg(svg_file_path)
-display_points_in_pygame(points)
-print(points)
+# # Example usage
+# svg_file_path = '/home/knightmar/code/HadokenPrint/imgs/sylwetka-syrena_sport.svg'
+# points = extract_points_from_svg(svg_file_path)
+# display_points_in_pygame(points)
+# print(points)

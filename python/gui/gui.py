@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
 
-from python.gui.file import FileInterface
-from python.gui.joystick import Joystick
-from python.gui.printer import PrinterInterface
+from file import FileInterface
+from joystick import Joystick
+from printer import PrinterInterface
+from hand_draw import HandDrawInterface
 from python.utils import motor_manager
-from python.gui.hand_draw import HandDrawInterface
 
 speed = 50
 

@@ -1,6 +1,6 @@
 import time
 
-from python.utils import motor_manager
+from utils import motor_manager
 
 radius = 200
 

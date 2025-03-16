@@ -17,7 +17,7 @@ class MotorManager:
         self.pos_listeners = []
 
         try:
-            self.serial_arduino = serial.Serial(serial_port_arduino, baudrate=baud)
+            self.serial_arduino = serial.Serial(serial_port_arduino, baudrate=9600)
             self.motor_x = serial.Serial(serial_port_x, baudrate=baud)
             self.motor_y = serial.Serial(serial_port_y, baudrate=baud)
 
@@ -29,8 +29,8 @@ class MotorManager:
 
     def goto_absolute(self, x, y, allow_negative=False):
         # print("starting move")
-        self.x = min(x, width)
-        self.y = min(y, height)
+        self.x = round(min(x, width))
+        self.y = round(min(y, height))
         # min by 1 because 0 is error
         if not allow_negative:
             self.x = max(self.x, 1)
@@ -46,7 +46,7 @@ class MotorManager:
         while True:
             x_response = self.motor_x.readline().decode().strip()
             y_response = self.motor_y.readline().decode().strip()
-            # print(x_response, y_response)
+            print(x_response, y_response)
             if x_response == "OK" and y_response == "OK":
                 break
 
@@ -66,10 +66,10 @@ class MotorManager:
         while True:
             try:
                 self.serial_arduino.reset_input_buffer()
-                str = self.serial_arduino.readline()
-                print(str)
-                x_base = chr(str[2])
-                y_base = chr(str[6])
+                string = self.serial_arduino.readline()
+                print(string)
+                x_base = chr(string[0])
+                y_base = chr(string[1])
 
                 print(x_base, y_base)
 

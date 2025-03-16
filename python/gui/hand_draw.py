@@ -9,7 +9,6 @@ from python.utils import motor_manager
 class HandDrawInterface:
     def __init__(self, master):
         self.canvas = tk.Canvas(master, width=motor_manager.width, height=motor_manager.height, bg="white")
-        self.canvas.pack()
         self.canvas.bind("<B1-Motion>", self.draw_pixels)
         self.canvas.bind("<ButtonRelease-1>", self.end_line)
 
@@ -21,6 +20,8 @@ class HandDrawInterface:
 
         self.load_button = tk.Button(master, text="Load", command=self.load)
         self.load_button.pack()
+
+        self.canvas.pack()
 
         self.pixel_list = []
         self.current_line = []
